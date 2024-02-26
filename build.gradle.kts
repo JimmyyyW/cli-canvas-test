@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.9.22"
     application
 }
 
-group = "org.oaktreepower"
+group = "org.oaktree"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    implementation("io.arrow-kt:arrow-core:1.2.1")
     testImplementation(kotlin("test"))
 }
 
@@ -21,7 +22,10 @@ tasks.test {
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs = listOf("-Xcontext-receivers")
+    }
 }
 
 application {
