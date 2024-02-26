@@ -1,6 +1,7 @@
 package domain.mapping
 
 import domain.CreateCommand
+import domain.FloodFillCommand
 import domain.InputError
 import domain.LineCommand
 import domain.QuitCommand
@@ -65,8 +66,26 @@ class ParserKtTest {
         }
     }
 
+    @Nested
+    inner class FloodFillParseTest {
+        @ParameterizedTest
+        @ValueSource(strings = ["B 10 3 o", "B 9 29 1"])
+        fun `should be able ot parse valid line command strings`(input: String) {
+            val parseResult = parseCommand(input)
+
+            assertTrue(parseResult.isRight())
+            assertEquals(parseResult.getOrNull()!!::class, FloodFillCommand::class)
+        }
+    }
+
     @ParameterizedTest
-    @ValueSource(strings = [" ", "q", "Z", "Q1", "C4", "C A 12", "C 0 0", "L 2 2 2 2 2 2"])
+    @ValueSource(strings = [
+        " ", "q", "Z", "Q1",
+        "C4", "C A 12", "C 0 0",
+        "L 2 2 2 2 2 2", "L 6 3 6 4 X",
+        "R 16 1 1 1 1", "R32 132 11",
+        "B 10 3 foo", "B xy 10 2"
+    ])
     fun `should result in InputError when input invalid` (s: String) {
         val parseResult = parseCommand(s)
         Assertions.assertTrue(parseResult.isLeft())

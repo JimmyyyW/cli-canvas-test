@@ -4,6 +4,7 @@ import arrow.core.Either
 import domain.AppError
 import domain.Command
 import domain.CreateCommand
+import domain.FloodFillCommand
 import domain.InputError
 import domain.LineCommand
 import domain.QuitCommand
@@ -21,6 +22,7 @@ private fun List<String>.toCommand(): Either<AppError, Command> {
         "C" -> this.toCreateCommand()
         "L" -> this.toFourPointCommand(LineCommand::class)
         "R" -> this.toFourPointCommand(RectangleCommand::class)
+        "B" -> this.toFloodFillCommand()
         else -> Either.Left(InputError())
     }
 }
@@ -41,7 +43,7 @@ private fun List<String>.toCreateCommand(): Either<AppError, CreateCommand> {
 
 private fun List<String>.toFourPointCommand(type: KClass<out Command>): Either<AppError, Command> {
     if (this.size != 5) {
-        return Either.Left(InputError("expected 2 values, an X and Y value"))
+        return Either.Left(InputError("expected 4 values, X1, Y1, X2 and Y2 value"))
     }
     return try {
         val x1 = this[1].toInt()
@@ -55,5 +57,23 @@ private fun List<String>.toFourPointCommand(type: KClass<out Command>): Either<A
         }
     } catch (e: NumberFormatException) {
         Either.Left(InputError("Failed to parse integer"))
+    }
+}
+
+private fun List<String>.toFloodFillCommand(): Either<AppError, Command> {
+    if (this.size != 4) {
+        return Either.Left(InputError("expected 3 values, an X, Y and character"))
+    }
+    return try {
+        val x = this[1].toInt()
+        val y = this[2].toInt()
+        if (this[3].length > 1) {
+            Either.Left(InputError("can only flood fill with single characters"))
+        } else {
+            val char = this[3].first()
+            Either.Right(FloodFillCommand(x, y, char))
+        }
+    } catch (e: Exception) {
+        Either.Left(InputError("Failed to parse integer or character value"))
     }
 }

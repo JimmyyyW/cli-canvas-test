@@ -2,6 +2,7 @@ package ports.out
 
 import domain.Canvas
 import domain.createCanvas
+import domain.floodFill
 import domain.line
 import domain.rectangle
 import org.junit.jupiter.api.Assertions.*
@@ -80,6 +81,24 @@ class RendererTest {
 
     }
 
+    @Test
+    fun `should draw a 20x4 canvas flood fill B 10 3 o`() {
+        val oldOut = System.out
+        val outputStream = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStream))
+
+        val canvas = createCanvas(22, 6)
+        canvas.rectangle(16, 1, 20, 3)
+        canvas.floodFill(3, 10, 'o')
+        render(canvas)
+
+        System.setOut(oldOut)
+
+        val result = outputStream.toString(Charsets.UTF_8)
+
+        assertEquals(expectedDrawResult20x4withFloodFill(), result)
+
+    }
 
     private fun expectedDrawResult() = """
         XXXX
@@ -115,6 +134,16 @@ class RendererTest {
        |${" ".repeat(15)}x   x|
        |${" ".repeat(15)}xxxxx|
        |${" ".repeat(20)}|
+       ${"-".repeat(22)}
+       
+    """.trimIndent()
+
+    private fun expectedDrawResult20x4withFloodFill() = """
+       ${"-".repeat(22)}
+       |${"o".repeat(15)}xxxxx|
+       |${"o".repeat(15)}x   x|
+       |${"o".repeat(15)}xxxxx|
+       |${"o".repeat(20)}|
        ${"-".repeat(22)}
        
     """.trimIndent()

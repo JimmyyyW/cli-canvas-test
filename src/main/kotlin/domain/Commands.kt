@@ -49,3 +49,15 @@ data class RectangleCommand(
         }
     }
 }
+
+data class FloodFillCommand(
+    val x: Int, val y: Int, val char: Char
+) : Command {
+    context(ExecutionContext) override fun execute() {
+        val floodFilled = canvas?.floodFill(y, x, char)
+        floodFilled?.isRight()?.let { isSuccess ->
+            if (isSuccess) canvas = floodFilled.getOrNull()
+            if (!isSuccess) println(floodFilled.leftOrNull()?.message)
+        }
+    }
+}
