@@ -1,5 +1,6 @@
 package domain
 
+import context.ExecutionContext
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -13,7 +14,9 @@ class QuitCommandTest {
         val outputStream = ByteArrayOutputStream()
         System.setOut(PrintStream(outputStream))
 
-        QuitCommand.execute()
+        with(ExecutionContext()) {
+            QuitCommand.execute()
+        }
 
         System.setOut(out)
 
