@@ -1,0 +1,10 @@
+feature 1 - launch cli app with input text
+feature 2 - implement quit command + basic command parsing
+feature 3 - create command + canvas initialisation
+feature 4 - line command
+feature 5 - rectangle command
+feature 6 - floodfill
+
+stretch 1 - carriage returns/cursor control
+stretch 2 - binary executable
+stretch 3 - replace arrow
