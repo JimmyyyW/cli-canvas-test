@@ -14,8 +14,8 @@ data class ExecutionContext(
     }
 
     fun repeat(block: () -> Unit) {
-        do {
+        while (shouldRepeat) {
             block.invoke()
-        } while (shouldRepeat)
+        }
     }
 }

@@ -11,6 +11,7 @@ data object QuitCommand : Command {
     context (ExecutionContext)
     override fun execute() {
         shouldRepeat = false
+        canvas = null
         print("Exiting..")
     }
 }
@@ -32,7 +33,7 @@ data class LineCommand(
         val line = canvas?.line(x1, y1, x2, y2)
         line?.isRight()?.let { isSuccess ->
             if (isSuccess) canvas = line.getOrNull()
-            if (!isSuccess) println(line.leftOrNull())
+            if (!isSuccess) println(line.leftOrNull()?.message)
         }
     }
 }
@@ -41,10 +42,10 @@ data class RectangleCommand(
     val x1: Int, val y1: Int, val x2: Int, val y2: Int,
 ) : Command {
     context(ExecutionContext) override fun execute() {
-        val line = canvas?.line(x1, y1, x2, y2)
-        line?.isRight()?.let { isSuccess ->
-            if (isSuccess) canvas = line.getOrNull()
-            if (!isSuccess) println(line.leftOrNull())
+        val rectangle = canvas?.rectangle(x1, y1, x2, y2)
+        rectangle?.isRight()?.let { isSuccess ->
+            if (isSuccess) canvas = rectangle.getOrNull()
+            if (!isSuccess) println(rectangle.leftOrNull()?.message)
         }
     }
 }

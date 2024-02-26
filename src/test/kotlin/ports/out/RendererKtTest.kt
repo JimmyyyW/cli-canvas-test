@@ -3,6 +3,7 @@ package ports.out
 import domain.Canvas
 import domain.createCanvas
 import domain.line
+import domain.rectangle
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -61,6 +62,24 @@ class RendererTest {
 
     }
 
+    @Test
+    fun `should draw a 20x4 canvas with R 16 1 20 3`() {
+        val oldOut = System.out
+        val outputStream = ByteArrayOutputStream()
+        System.setOut(PrintStream(outputStream))
+
+        val canvas = createCanvas(22, 6)
+        canvas.rectangle(16, 1, 20, 3)
+        render(canvas)
+
+        System.setOut(oldOut)
+
+        val result = outputStream.toString(Charsets.UTF_8)
+
+        assertEquals(expectedDrawResult20x4withRectangle(), result)
+
+    }
+
 
     private fun expectedDrawResult() = """
         XXXX
@@ -85,6 +104,16 @@ class RendererTest {
        |${" ".repeat(20)}|
        |${"x".repeat(6)}${" ".repeat(14)}|
        |${" ".repeat(20)}|
+       |${" ".repeat(20)}|
+       ${"-".repeat(22)}
+       
+    """.trimIndent()
+
+    private fun expectedDrawResult20x4withRectangle() = """
+       ${"-".repeat(22)}
+       |${" ".repeat(15)}xxxxx|
+       |${" ".repeat(15)}x   x|
+       |${" ".repeat(15)}xxxxx|
        |${" ".repeat(20)}|
        ${"-".repeat(22)}
        
