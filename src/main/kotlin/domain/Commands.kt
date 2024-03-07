@@ -1,10 +1,15 @@
 package domain
 
+import arrow.core.Either
 import context.ExecutionContext
 
 sealed interface Command {
     context (ExecutionContext)
     fun execute()
+}
+
+interface Sanitized {
+    fun validate(): Either<AppError, Command>
 }
 
 data object QuitCommand : Command {
@@ -28,12 +33,20 @@ data class CreateCommand(val x: Int, val y: Int) : Command {
 // could potentially merge with Rectangle Command as 'Four Point Command or something'
 data class LineCommand(
     val x1: Int, val y1: Int, val x2: Int, val y2: Int,
-) : Command {
+) : Command, Sanitized {
     context(ExecutionContext) override fun execute() {
         val line = canvas?.line(x1, y1, x2, y2)
         line?.isRight()?.let { isSuccess ->
             if (isSuccess) canvas = line.getOrNull()
             if (!isSuccess) println(line.leftOrNull()?.message)
+        }
+    }
+
+    override fun validate(): Either<AppError, Command> {
+        return if (x1 > 0 && y1 > 0 && x2 >0 && y2 > 0) {
+            Either.Right(this)
+        } else {
+            Either.Left(InputError("negatives not allowed"))
         }
     }
 }
@@ -52,7 +65,7 @@ data class RectangleCommand(
 
 data class FloodFillCommand(
     val x: Int, val y: Int, val char: Char
-) : Command {
+) : Command, Sanitized {
     context(ExecutionContext) override fun execute() {
         val floodFilled = canvas?.floodFill(y, x, char)
         floodFilled?.isRight()?.let { isSuccess ->
@@ -60,4 +73,13 @@ data class FloodFillCommand(
             if (!isSuccess) println(floodFilled.leftOrNull()?.message)
         }
     }
+
+    override fun validate(): Either<AppError, Command> {
+        return if (x > 0 && y > 0) {
+            Either.Right(this)
+        } else {
+            Either.Left(InputError("negatives not allowed"))
+        }
+    }
 }
+

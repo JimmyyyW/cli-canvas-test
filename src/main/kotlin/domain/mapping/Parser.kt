@@ -51,9 +51,9 @@ private fun List<String>.toFourPointCommand(type: KClass<out Command>): Either<A
         val x2 = this[3].toInt()
         val y2 = this[4].toInt()
         when (type) {
-            LineCommand::class -> Either.Right(LineCommand(x1, y1, x2, y2))
+            LineCommand::class -> LineCommand(x1, y1, x2, y2).validate()
             RectangleCommand::class -> Either.Right(RectangleCommand(x1, y1, x2, y2))
-            else -> Either.Left(InputError("asda"))
+            else -> Either.Left(InputError(""))
         }
     } catch (e: NumberFormatException) {
         Either.Left(InputError("Failed to parse integer"))
@@ -71,7 +71,7 @@ private fun List<String>.toFloodFillCommand(): Either<AppError, Command> {
             Either.Left(InputError("can only flood fill with single characters"))
         } else {
             val char = this[3].first()
-            Either.Right(FloodFillCommand(x, y, char))
+            FloodFillCommand(x, y, char).validate()
         }
     } catch (e: Exception) {
         Either.Left(InputError("Failed to parse integer or character value"))

@@ -8,6 +8,7 @@ import domain.QuitCommand
 import domain.RectangleCommand
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.assertEquals
@@ -76,6 +77,16 @@ class ParserKtTest {
             assertTrue(parseResult.isRight())
             assertEquals(parseResult.getOrNull()!!::class, FloodFillCommand::class)
         }
+
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["B -10 2 d", "L 3 4 -2 4"])
+    fun `should result in input error on negative x or y`(input: String) {
+        val parseResult = parseCommand(input)
+
+        assertTrue(parseResult.isLeft())
+        assertEquals(parseResult.leftOrNull(), InputError("negatives not allowed"))
     }
 
     @ParameterizedTest
